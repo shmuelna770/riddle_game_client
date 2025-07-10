@@ -10,7 +10,7 @@ let choice = ''
 
 
 while (continuPlaying) {
-  welcome();
+ const choice =  welcome();
 
   switch (choice) {
     case "1":

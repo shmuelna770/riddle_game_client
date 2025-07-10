@@ -1,3 +1,7 @@
+import readlineSync from 'readline-sync';
+import Player from './classes/Player.js';
+import Riddle from './classes/Riddle.js';
+import fs from "fs"
 
 
 function welcome() {
@@ -9,7 +13,8 @@ function welcome() {
   console.log("5. delete a riddle");
   console.log("6. exit");
 
-  choice = readlineSync.question("chuse an option:");
+  const choice = readlineSync.question("chuse an option:");
+  return choice;
 }
 
 async function deleteARiddle() {
