@@ -31,12 +31,6 @@
   },
   {
     "id": 6,
-    "name": "d",
-    "taskDescription": "4+4",
-    "correctAnswer": "8"
-  },
-  {
-    "id": 8,
     "name": "test 2",
     "taskDescription": "what is 20-10?",
     "correctAnswer": "10"

@@ -59,7 +59,7 @@ async function updateRiddle(id, newName, newtaskDescription, newcorrectAnswer) {
 
 async function deleteRiddle(id) {
     const data = await fs.readFile(FILE_PATH, 'utf-8')
-    const riddles = JSON.parse(data)
+    let riddles = JSON.parse(data)
 
     const index = riddles.findIndex(i => i.id === id)
     if (index === -1) {
@@ -67,11 +67,18 @@ async function deleteRiddle(id) {
         return;
     }
     riddles.splice(index, 1)
+// recount the riddles
+    riddles = riddles.map((riddle, idx) => ({
+        ...riddle,
+        id: idx + 1
+    }));
 
-    await fs.writeFile(FILE_PATH,JSON.stringify(riddles,null,2),'utf-8')
+    await fs.writeFile(FILE_PATH, JSON.stringify(riddles, null, 2), 'utf-8')
     console.log(`riddle number ${id} dleted successfully`);
-    
+
+
+
 }
 
 // await getallriddles();
-export { getallriddles, createRiddle, updateRiddle ,deleteRiddle}
+export { getallriddles, createRiddle, updateRiddle, deleteRiddle }
