@@ -40,5 +40,11 @@
     "name": "sipple math",
     "taskDescription": "what is 20 / 4 ?",
     "correctAnswer": "5"
+  },
+  {
+    "id": 8,
+    "name": "test 2",
+    "taskDescription": "1+1",
+    "correctAnswer": "2"
   }
 ]
