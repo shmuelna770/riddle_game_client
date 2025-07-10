@@ -2,9 +2,14 @@ import readlineSync from 'readline-sync';
 import Riddle from './classes/Riddle.js';
 import Player from './classes/Player.js';
 import fs from "fs"
+import { getallriddles, createRiddle, updateRiddle,deleteRiddle } from './DAL/riddleDal.js';
 
+
+let continuPlaying = true;
 let choice = ''
-while (choice !== "6") {
+
+
+while (continuPlaying) {
   console.log("Welcome to the riddle game!");
   console.log("1. play the game");
   console.log("2. create a new riddle");
@@ -21,7 +26,7 @@ while (choice !== "6") {
       const name = readlineSync.question("what is your name? ");
       const player = new Player(name);
 
-      const riddlesRaw = fs.readFileSync("riddles/json-riddle.txt", "utf8");
+      const riddlesRaw = fs.readFileSync('C:/Users/shmuel nabul/Desktop/riddleGame/riddlesDB/json-riddle.txt', "utf8");
       const riddles = JSON.parse(riddlesRaw);
       for (let riddleData of riddles) {
         const riddle = new Riddle(
@@ -36,36 +41,59 @@ while (choice !== "6") {
         const end = Date.now();
 
         player.recordTime(start, end);
+        player.showStats();
       }
       break;
-
     case "2":
-      console.log('creating a new riddele');
+      console.log('creating a new riddle');
+      const riddlename = readlineSync.question("Enter riddle name: ");
+      const task = readlineSync.question("Enter the riddle question: ");
+      const answer = readlineSync.question("Enter the correct answer: ");
+      await createRiddle(riddlename, task, answer);
       break;
 
     case "3":
-      console.log('showing all th players');
+      await getallriddles()
+      console.log('showing all th riddles');
       break;
 
     case "4":
       console.log('updating a riddele');
+      const idUpdate = Number(readlineSync.question('enter the id number that you want to change:'))
+      const newName = readlineSync.question('enter a new name: ')
+      const newTask = readlineSync.question('enter a new riddle qustion:')
+      const newAnswer = readlineSync.question('enter a new answer:')
+      
+      await updateRiddle(idUpdate, newName, newTask, newAnswer);
+
       break;
 
     case "5":
+       await getallriddles()
       console.log('deliting a riddele');
+      const idToDelete = Number(readlineSync.question('enter id number you whant to delete:'))
+      await deleteRiddle(idToDelete)
       break;
 
     case "6":
+      continuPlaying = false;
       console.log('good by');
       break;
 
     default:
       console.log('invalid choice , try again');
+  }
+  //cheks if the player whant to play again 
+  if (continuPlaying) {
+    const again = readlineSync.question("do you want to continue (y/n)? ")
+    if (again !== 'y') {
+      continuPlaying = false;
+      console.log('bey bye');
 
-
+    }
   }
 }
 
 
 
-player.showStats();
+
