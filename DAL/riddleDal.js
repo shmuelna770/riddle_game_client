@@ -5,6 +5,7 @@ import { json } from "stream/consumers"
 const FILE_PATH = 'C:/Users/shmuel nabul/Desktop/riddleGame/riddlesDB/json-riddle.txt'
 // function to get all riddles
 async function getallriddles() {
+    console.log('showing all th riddles');
     const data = await fs.readFile(FILE_PATH, 'utf-8')
     const riddles = JSON.parse(data)
 
@@ -15,7 +16,7 @@ async function getallriddles() {
     for (let i = 0; i < riddles.length; i++) {
         const riddle = riddles[i]
         console.log(`id: ${riddle.id} riddle:  ${riddle.taskDescription} answer:  ${riddle.correctAnswer} `);
-
+        
     }
 }
 
