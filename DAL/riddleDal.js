@@ -2,84 +2,88 @@ import fs from "fs/promises"
 import { json } from "stream/consumers"
 // import Riddle from "../classes/Riddle"
 
-const FILE_PATH = 'C:/Users/shmuel nabul/Desktop/riddleGame/riddlesDB/json-riddle.txt'
+//const FILE_PATH = 'C:/Users/shmuel nabul/Desktop/riddleGame/riddlesDB/json-riddle.txt'
 // function to get all riddles
 async function getallriddles() {
     console.log('showing all th riddles');
-    const data = await fs.readFile(FILE_PATH, 'utf-8')
-    const riddles = JSON.parse(data)
+    const response = await fetch("http://localhost:3041/riddles");
+    const riddles = await response.json();
+    console.log('riddel', riddles);
 
-    if (!data.trim()) {
+
+
+    if (!riddles) {
         console.log("its empty");
         return;
     }
     for (let i = 0; i < riddles.length; i++) {
         const riddle = riddles[i]
-        console.log(`id: ${riddle.id} riddle:  ${riddle.taskDescription} answer:  ${riddle.correctAnswer} `);
-        
+        console.log(`id: ${riddle._id} riddle:  ${riddle.taskDescription} answer:  ${riddle.correctAnswer} `);
+
     }
 }
 
-//function to add a new riddle in th menu
+//function to add a new riddle in the menu
 async function createRiddle(riddlename, taskDescription, correctAnswer) {
-    const data = await fs.readFile(FILE_PATH, 'utf-8')
-    const riddles = JSON.parse(data)
-    const newId = riddles[riddles.length - 1].id + 1;
-
     const newRiddle = {
-        id: newId,
         name: riddlename,
         taskDescription: taskDescription,
         correctAnswer: correctAnswer
     }
-    riddles.push(newRiddle)
+    const response = await fetch("http://localhost:3041/riddles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newRiddle)
+    })
+        if (!response.ok) {
+        console.error("cannot add a riddle", response.status);
+        return;
+    }
 
-    await fs.writeFile(FILE_PATH, JSON.stringify(riddles, null, 2), 'utf-8')
-    console.log('riddle secssfuly added');
+    const result = await response.json();
+    console.log('riddle secssfuly added', result);
 
 }
 
 // function to update a riddle
-async function updateRiddle(id, newName, newtaskDescription, newcorrectAnswer) {
-    const data = await fs.readFile(FILE_PATH, 'utf-8')
-    const riddles = JSON.parse(data)
-
-    const riddle = riddles.find(i => i.id === id)
-    if (!riddle) {
-        console.log('no riddle found in this id!');
-        return;
+async function updateRiddle(id, newname, newtaskDescription, newcorrectAnswer) {
+   const update = {
+        name: newname,
+        taskDescription: newtaskDescription,
+        correctAnswer: newcorrectAnswer
     }
-    riddle.name = newName || riddle.name;
-    riddle.taskDescription = newtaskDescription || riddle.taskDescription
-    riddle.correctAnswer = newcorrectAnswer || riddle.correctAnswer
-
-    await fs.writeFile(FILE_PATH, JSON.stringify(riddles, null, 2), 'utf-8')
-    console.log('riddle update successfully');
-
+    console.log({id, newname, newtaskDescription, newcorrectAnswer});
+    
+   
+    const response = await fetch(`http://localhost:3041/riddles/${id}`,{
+        method:"PUT",
+        headers:{"Content-Type": "application/json"},
+        body: JSON.stringify(update)
+    })
+   
+   if(!response.ok){
+    console.error("riddle didnt update",response.status)
+    return;
+   }
+   const result = await response.json()
+   console.log('riddle apdate sucssefuly',result); 
 }
 
+// function to delete a riddle
 async function deleteRiddle(id) {
-    const data = await fs.readFile(FILE_PATH, 'utf-8')
-    let riddles = JSON.parse(data)
+    const response = await fetch(`http://localhost:3041/riddles/${id}`, {
+        method: "DELETE"
+    });
 
-    const index = riddles.findIndex(i => i.id === id)
-    if (index === -1) {
-        console.log('index is not found');
+    if (!response.ok) {
+        console.error("failed to delete riddle:", response.status);
         return;
     }
-    riddles.splice(index, 1)
-// recount the riddles
-    riddles = riddles.map((riddle, idx) => ({
-        ...riddle,
-        id: idx + 1
-    }));
-
-    await fs.writeFile(FILE_PATH, JSON.stringify(riddles, null, 2), 'utf-8')
-    console.log(`riddle number ${id} dleted successfully`);
-
-
-
+    const result = await response.json();
+    console.log(`Riddle ${id} deleted successfully:`, result);
 }
+
+
 
 // await getallriddles();
 export { getallriddles, createRiddle, updateRiddle, deleteRiddle }

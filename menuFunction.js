@@ -20,14 +20,14 @@ function welcome() {
 async function deleteARiddle() {
     await getallriddles();
     console.log('deliting a riddele');
-    const idToDelete = Number(readlineSync.question('enter id number you whant to delete:'));
+    const idToDelete = readlineSync.question('enter id number you whant to delete:');
     await deleteRiddle(idToDelete);
 }
 
 async function updateRiddleUser() {
     await getallriddles()
     console.log('updating a riddele');
-    const idUpdate = Number(readlineSync.question('enter the id number that you want to change:'));
+    const idUpdate = readlineSync.question('enter the id number that you want to change:');
     const newName = readlineSync.question('enter a new name: ');
     const newTask = readlineSync.question('enter a new riddle qustion:');
     const newAnswer = readlineSync.question('enter a new answer:');
