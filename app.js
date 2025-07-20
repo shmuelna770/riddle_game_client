@@ -10,11 +10,11 @@ let choice = ''
 
 
 while (continuPlaying) {
- const choice =  welcome();
+  const choice = welcome();
 
   switch (choice) {
     case "1":
-      startNewGame();
+      await startNewGame();
       break;
     case "2":
       await creatNewRidlle();

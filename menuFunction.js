@@ -43,28 +43,35 @@ async function creatNewRidlle() {
     await createRiddle(riddlename, task, answer);
 }
 
-function startNewGame() {
+async function startNewGame() {
     console.log('strarting a new game');
     const name = readlineSync.question("what is your name? ");
     const player = new Player(name);
-
-    const riddlesRaw = fs.readFileSync('C:/Users/shmuel nabul/Desktop/riddleGame/riddlesDB/json-riddle.txt', "utf8");
-    const riddles = JSON.parse(riddlesRaw);
-    for (let riddleData of riddles) {
-        const riddle = new Riddle(
-            riddleData.id,
-            riddleData.name,
-            riddleData.taskDescription,
-            riddleData.correctAnswer
-        );
-
-        const start = Date.now();
-        riddle.ask();
-        const end = Date.now();
-
-        player.recordTime(start, end);
-        player.showStats();
-    }
+try {
+    
+        const response = await fetch("http://localhost:3041/riddles");
+        const riddles = await response.json();
+    
+    
+        for (let riddleData of riddles) {
+            const riddle = new Riddle(
+                riddleData.id,
+                riddleData.name,
+                riddleData.taskDescription,
+                riddleData.correctAnswer
+            );
+    
+            const start = Date.now();
+            riddle.ask();
+            const end = Date.now();
+    
+            player.recordTime(start, end);
+            player.showStats();
+        }
+} catch (error) {
+    console.log('start game :',error);
+    
+}
 }
 
 export { welcome, deleteARiddle, updateRiddleUser, creatNewRidlle, startNewGame }
